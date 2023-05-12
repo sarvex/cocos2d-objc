@@ -78,31 +78,25 @@ def write_to_file():
 
     purge_dict( class_dict)
 
-    file_h = open('CCCompatibility.h','w+')
-    file_m = open('CCCompatibility.m','w+')
+    with open('CCCompatibility.h','w+') as file_h:
+        file_m = open('CCCompatibility.m','w+')
 
-    keys = []
+        keys = list(class_dict)
+        keys = sorted( keys )
 
-    # sort keys
-    for k in class_dict:
-        keys.append( k )
-    keys = sorted( keys )
-    
-    # header file
-    file_h.write( copyright )
-    file_h.write( pre_header )
+        # header file
+        file_h.write( copyright )
+        file_h.write( pre_header )
 
-    for k in keys:
-        old = k
-        new = class_dict[k]
-        if new == '':
-            new = 'CC' + old
+        for k in keys:
+            old = k
+            new = class_dict[k]
+            if new == '':
+                new = f'CC{old}'
 
-        file_h.write('DEPRECATED_ATTRIBUTE ')
-        file_h.write('@interface %s : %s {} @end\n' % (old, new) )
-    file_h.write( post_header )
-    file_h.close()
-
+            file_h.write('DEPRECATED_ATTRIBUTE ')
+            file_h.write('@interface %s : %s {} @end\n' % (old, new) )
+        file_h.write( post_header )
     # implementation file
     file_m.write( copyright )
     file_m.write( pre_m )
